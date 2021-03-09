@@ -40,22 +40,19 @@
 %right SEMIC DOUBLEPTS ARROW
 %left ELSE AND EQ DIF SMALLER SMALLEREQ PLUS MINUS MULTI DIV LBRACK
 %nonassoc IF NEGATION HEAD TAIL ISEMPTY PRINT NAME
-
-
 %noshift EOF
-
 %start Prog
 
 %%
 
-Prog : Expr (Expr) 
+Prog: Expr (Expr) 
     | Decl (Decl)
 
-Decl : VAR NAME EQ Expr SEMIC Prog (Let(NAME, Expr, Prog))
+Decl: VAR NAME EQ Expr SEMIC Prog (Let(NAME, Expr, Prog))
     | FUN NAME Args EQ Expr SEMIC Prog (Let(NAME, makeAnon(Args, Expr), Prog))
     | FUN RECURSIVE NAME Args COLON Type EQ Expr SEMIC Prog (MakeFun(NAME, Args, Type, Expr, Prog))
 
-Expr : AtomExpr(AtomExpr)
+Expr: AtomExpr(AtomExpr)
     | AppExpr(AppExpr)
     | IF Expr THEN Expr ELSE Expr (If(Expr1, Expr2, Expr3))
     | MATCH Expr WITH MatchExpr (Match (Expr, MatchExpr))
@@ -87,7 +84,7 @@ AtomExpr: Const (Const)
 AppExpr: AtomExpr AtomExpr (Call(AtomExpr1, AtomExpr2))
     | AppExpr AtomExpr (Call(AppExpr, AtomExpr))
 
-Const : TRUE (ConB(TRUE)) | FALSE (ConB(FALSE))
+Const: TRUE (ConB(TRUE)) | FALSE (ConB(FALSE))
     | CINT (ConI(CINT))
     | LPAR RPAR (Nil)
     | LPAR Type LBRACK RBRACK RPAR (ESeq(Type))
@@ -95,16 +92,16 @@ Const : TRUE (ConB(TRUE)) | FALSE (ConB(FALSE))
 Comps: Expr COMMA Expr (Expr1 :: Expr2 :: [])
     | Expr COMMA Comps (Expr :: Comps)
 
-MatchExpr : END (Nil)
+MatchExpr: END (Nil)
     | VERTBAR CondExpr ARROW Expr MatchExpr ((CondExpr, Expr) :: MatchExpr)
 
-CondExpr : Expr (SOME Expr)
+CondExpr: Expr (SOME Expr)
     | UNDERSCORE (NONE)
 
-Args : LPAR RPAR ([])
+Args: LPAR RPAR ([])
     | TypedVar COMMA Params (TypedVar :: Params)
 
-TypedVar : Type NAME ((Type, NAME))
+TypedVar: Type NAME ((Type, NAME))
 
 Type: AtomType(AtomType)
     | LPAR Types RPAR (ListT [])
@@ -116,5 +113,5 @@ AtomType: NIL (ListT [])
     | INT (IntT)
     | LPAR Type RPAR (Type)
 
-Types : Type COMMA Type (Type1 :: Type2 :: [])
+Types: Type COMMA Type (Type1 :: Type2 :: [])
     | Type COMMA Types (Type :: Types)
