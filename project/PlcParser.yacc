@@ -4,7 +4,7 @@
 
 %pos int
 
-%term VAR | FUN | END | FN
+%term VAR | END | FN | RECURSIVE
     | IF | THEN | ELSE
     | MATCH | WITH
     | NEGATION | AND
@@ -19,7 +19,7 @@
     | NAME of string | CINT of int | FUN of expr | LIST of list
     | EOF
 
-%nonterm Prog of expr |
+%nonterm Prog of expr 
     | Decl of expr
     | Expr of expr
     | AtomExpr of expr
@@ -53,7 +53,7 @@ Prog : Expr (Expr)
 
 Decl : VAR NAME EQ Expr SEMIC Prog (Let(NAME, Expr, Prog))
     | FUN NAME Args EQ Expr SEMIC Prog (Let(NAME, makeAnon(Args, Expr), Prog))
-    | FUN REC NAME Args COLON Type EQ Expr SEMIC Prog (MakeFun(NAME, Args, Type, Expr, Prog))
+    | FUN RECURSIVE NAME Args COLON Type EQ Expr SEMIC Prog (MakeFun(NAME, Args, Type, Expr, Prog))
 
 Expr : AtomExpr(AtomExpr)
     | AppExpr(AppExpr)
@@ -88,7 +88,7 @@ AppExpr: AtomExpr AtomExpr (Call(AtomExpr1, AtomExpr2))
     | AppExpr AtomExpr (Call(AppExpr, AtomExpr))
 
 Const : TRUE (ConB(TRUE)) | FALSE (ConB(FALSE))
-    | CINT ConI (CINT)
+    | CINT (ConI(CINT))
     | LPAR RPAR (Nil)
     | LPAR Type LBRACK RBRACK RPAR (ESeq(Type))
 
