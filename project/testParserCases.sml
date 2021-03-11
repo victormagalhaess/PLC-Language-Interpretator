@@ -1,5 +1,3 @@
-use "Absyn.sml";
-
 val cases =
   (
     let val s = "0";

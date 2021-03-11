@@ -37,9 +37,18 @@
 
 %eop EOF
 
-%right SEMIC DOUBLEPTS ARROW
-%left ELSE AND EQ DIF SMALLER SMALLEREQ PLUS MINUS MULTI DIV LBRACK
-%nonassoc IF NEGATION HEAD TAIL ISEMPTY PRINT NAME
+%right SEMIC ARROW
+%nonassoc IF
+%left ELSE 
+%left AND 
+%left EQ DIF
+%left SMALLER SMALLEREQ
+%right DOUBLEPTS
+%left PLUS MINUS
+%left MULTI DIV
+%nonassoc NEGATION HEAD TAIL ISEMPTY PRINT NAME
+%left LBRACK
+
 %noshift EOF
 %start Prog
 
@@ -108,7 +117,7 @@ Params : TypedVar (TypedVar::[])
 TypedVar: Type NAME ((Type, NAME))
 
 Type: AtomType(AtomType)
-    | LPAR Types RPAR (ListT [])
+    | LPAR Types RPAR (ListT Types)
     | LBRACK Type RBRACK (SeqT Type)
     | Type ARROW Type (FunT (Type1, Type2))
 

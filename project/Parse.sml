@@ -55,7 +55,6 @@ structure PlcFrontEnd = struct
         (TextIO.output(TextIO.stdOut, "*** PLC PARSER WARNING -- unconsumed input ***\n"); result)
     end
 
-
   val fromString = lexerToParser o stringToLexer
   val fromFile = lexerToParser o fileToLexer
 

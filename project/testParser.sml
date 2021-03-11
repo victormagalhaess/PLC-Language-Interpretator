@@ -18,6 +18,11 @@ Control.Print.stringDepth := 1000;
 
 open PlcFrontEnd;
 
+fun compare ([], []) = true
+   | compare (x::xs, y::ys) = (x = y) andalso compare(xs,ys)
+   |   compare (_,_) = false;
+
+
 fromString "15";
 fromString "true";
 fromString "()";
@@ -31,7 +36,22 @@ fromString "fun f(Int x) = x; f(1)";
 fromString "match x with | 0 -> 1| _ -> -1 end";
 fromFile ("example.plc");
 
-use "testParserCases.sml"
+use "testParserCases.sml";
 
 (* Try to add a systematic way of using the test cases in
    testParserCases to stress test your parser *)
+
+val input = map (fn x => 
+  #1x 
+) cases;
+
+val expected = map (fn x => 
+  #2x 
+) cases;
+
+val output = map (fn x => fromString x) input;
+
+val result = compare (expected, output);
+
+
+
