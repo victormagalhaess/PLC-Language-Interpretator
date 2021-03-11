@@ -3,8 +3,7 @@ sig
 type ('a,'b) token
 type svalue
 val EOF:  'a * 'a -> (svalue,'a) token
-val LIST: (list) *  'a * 'a -> (svalue,'a) token
-val FUN: (expr) *  'a * 'a -> (svalue,'a) token
+val FUN:  'a * 'a -> (svalue,'a) token
 val CINT: (int) *  'a * 'a -> (svalue,'a) token
 val NAME: (string) *  'a * 'a -> (svalue,'a) token
 val LBRACK:  'a * 'a -> (svalue,'a) token
@@ -30,7 +29,6 @@ val SMALLEREQ:  'a * 'a -> (svalue,'a) token
 val SMALLER:  'a * 'a -> (svalue,'a) token
 val DIF:  'a * 'a -> (svalue,'a) token
 val EQ:  'a * 'a -> (svalue,'a) token
-val NEGATIVE:  'a * 'a -> (svalue,'a) token
 val DIV:  'a * 'a -> (svalue,'a) token
 val MULTI:  'a * 'a -> (svalue,'a) token
 val MINUS:  'a * 'a -> (svalue,'a) token

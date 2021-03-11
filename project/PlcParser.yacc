@@ -10,13 +10,13 @@
     | NEGATION | AND
     | HEAD | TAIL | ISEMPTY
     | PRINT
-    | PLUS | MINUS | MULTI | DIV | NEGATIVE
+    | PLUS | MINUS | MULTI | DIV 
     | EQ | DIF | SMALLER | SMALLEREQ 
     | DOUBLEPTS | COLON | SEMIC | COMMA | ARROW | VERTBAR | UNDERSCORE | FUNARROW
     | NIL | BOOL | INT
     | TRUE | FALSE
     | LPAR | RPAR | RKEY | LKEY | RBRACK | LBRACK
-    | NAME of string | CINT of int | FUN of expr | LIST of list
+    | NAME of string | CINT of int | FUN
     | EOF
 
 %nonterm Prog of expr 
@@ -50,7 +50,7 @@ Prog: Expr (Expr)
 
 Decl: VAR NAME EQ Expr SEMIC Prog (Let(NAME, Expr, Prog))
     | FUN NAME Args EQ Expr SEMIC Prog (Let(NAME, makeAnon(Args, Expr), Prog))
-    | FUN RECURSIVE NAME Args COLON Type EQ Expr SEMIC Prog (MakeFun(NAME, Args, Type, Expr, Prog))
+    | FUN RECURSIVE NAME Args COLON Type EQ Expr SEMIC Prog (makeFun(NAME, Args, Type, Expr, Prog))
 
 Expr: AtomExpr(AtomExpr)
     | AppExpr(AppExpr)
@@ -60,18 +60,19 @@ Expr: AtomExpr(AtomExpr)
     | Expr AND Expr (Prim2("&&", Expr1, Expr2))
     | HEAD Expr (Prim1("hd", Expr))
     | TAIL Expr (Prim1("tl", Expr))
-    | ISEMPTY Expr (Prim1("ise"), Expr)
-    | PRINT Expr (Prim1("print"), Expr)
+    | ISEMPTY Expr (Prim1("ise", Expr))
+    | PRINT Expr (Prim1("print", Expr))
     | Expr PLUS Expr (Prim2("+", Expr1, Expr2))
     | Expr MINUS Expr (Prim2("-", Expr1, Expr2))
     | Expr MULTI Expr (Prim2("*", Expr1, Expr2))
     | Expr DIV Expr (Prim2("/", Expr1, Expr2))
-    | NEGATIVE Expr (Prim1("-", Expr))
+    | MINUS Expr (Prim1("-", Expr))
     | Expr EQ Expr (Prim2("=", Expr1, Expr2))
     | Expr DIF Expr (Prim2("!=", Expr1, Expr2))
     | Expr SMALLER Expr (Prim2("<", Expr1, Expr2))
     | Expr SMALLEREQ Expr (Prim2("<=", Expr1, Expr2))
     | Expr DOUBLEPTS Expr (Prim2("::", Expr1, Expr2))
+    | Expr SEMIC Expr (Prim2(";", Expr1, Expr2))
     | Expr LBRACK CINT RBRACK (Item (CINT, Expr))
 
 AtomExpr: Const (Const)
@@ -84,22 +85,25 @@ AtomExpr: Const (Const)
 AppExpr: AtomExpr AtomExpr (Call(AtomExpr1, AtomExpr2))
     | AppExpr AtomExpr (Call(AppExpr, AtomExpr))
 
-Const: TRUE (ConB(TRUE)) | FALSE (ConB(FALSE))
-    | CINT (ConI(CINT))
-    | LPAR RPAR (Nil)
+Const: TRUE (ConB true) | FALSE (ConB false)
+    | CINT (ConI CINT)
+    | LPAR RPAR (List [])
     | LPAR Type LBRACK RBRACK RPAR (ESeq(Type))
 
 Comps: Expr COMMA Expr (Expr1 :: Expr2 :: [])
     | Expr COMMA Comps (Expr :: Comps)
 
-MatchExpr: END (Nil)
+MatchExpr: END ([])
     | VERTBAR CondExpr ARROW Expr MatchExpr ((CondExpr, Expr) :: MatchExpr)
 
-CondExpr: Expr (SOME Expr)
+CondExpr: Expr (SOME(Expr))
     | UNDERSCORE (NONE)
 
 Args: LPAR RPAR ([])
-    | TypedVar COMMA Params (TypedVar :: Params)
+    | LPAR Params RPAR (Params)
+
+Params : TypedVar (TypedVar::[])
+    | TypedVar COMMA Params (TypedVar::Params)
 
 TypedVar: Type NAME ((Type, NAME))
 
