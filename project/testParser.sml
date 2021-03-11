@@ -51,7 +51,7 @@ val expected = map (fn x =>
 
 val output = map (fn x => fromString x) input;
 
-val result = compare (expected, output);
+val success = compare (expected, output);
 
-
-
+"O parser rodou com sucesso?";
+success;
