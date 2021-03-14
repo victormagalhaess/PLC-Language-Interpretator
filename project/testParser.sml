@@ -19,8 +19,8 @@ Control.Print.stringDepth := 1000;
 open PlcFrontEnd;
 
 fun compare ([], []) = true
-   | compare (x::xs, y::ys) = (x = y) andalso compare(xs,ys)
-   |   compare (_,_) = false;
+  | compare (x::xs, y::ys) = (x = y) andalso compare(xs,ys)
+  |   compare (_,_) = false;
 
 
 fromString "15";
@@ -41,16 +41,7 @@ use "testParserCases.sml";
 (* Try to add a systematic way of using the test cases in
    testParserCases to stress test your parser *)
 
-val input = map (fn x => 
-  #1x 
-) cases;
+fun getBrokenTests ([], brokenCase) = "Testes do testParserCases passaram."
+  | getBrokenTests ((x:string,y:expr)::t, brokenCase) = if (fromString(x) = y) then getBrokenTests(t, x) else x;
 
-val expected = map (fn x => 
-  #2x 
-) cases;
-
-val output = map (fn x => fromString x) input;
-
-"O parser rodou com sucesso?";
-val success = compare (expected, output);
-
+getBrokenTests(cases, "");
