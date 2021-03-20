@@ -11,7 +11,7 @@ end handle Impossible => print ("PASSED => Impossible were succesfully raised\n"
 let 
     val test = eval (fromString "hd ([Int] [])") []
 in
-    print("HDEmptySeq => Impossible were supposed to be raised\n");
+    print("ERROR => HDEmptySeq were supposed to be raised\n");
     raise testError
 end handle HDEmptySeq => print ("PASSED => HDEmptySeq were succesfully raised\n");
 
