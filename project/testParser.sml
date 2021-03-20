@@ -41,7 +41,7 @@ use "testParserCases.sml";
 (* Try to add a systematic way of using the test cases in
    testParserCases to stress test your parser *)
 
-fun getBrokenTests ([], brokenCase) = "Testes do testParserCases passaram."
+fun getBrokenTests ([], brokenCase) = "SUCCESS"
   | getBrokenTests ((x:string,y:expr)::t, brokenCase) = if (fromString(x) = y) then getBrokenTests(t, x) else x;
 
 getBrokenTests(cases, "");
