@@ -23,17 +23,18 @@ in
 end handle TLEmptySeq => print ("PASSED => TLEmptySeq were succesfully raised\n");
 
 let 
+    val test = eval (fromString "match x with | 0 -> 1 end") [("x", IntV 3)]
+in
+    print("ERROR => ValueNotFoundInMatch were supposed to be raised\n");
+    raise testError
+end handle ValueNotFoundInMatch => print ("PASSED => ValueNotFoundInMatch were succesfully raised\n");
+
+let 
     val test = eval (fromString "var x = 3; x(1)") []
 in
     print("ERROR => NotAFunc were supposed to be raised\n");
     raise testError
 end handle NotAFunc => print ("PASSED => NotAFunc were succesfully raised\n");
 
-let 
-    val test = eval (fromString "match x with | 0 -> 1 end") [("x", IntV 3)]
-in
-    print("ERROR => ValueNotFoundInMatch were supposed to be raised\n");
-    raise testError
-end handle ValueNotFoundInMatch => print ("PASSED => ValueNotFoundInMatch were succesfully raised\n");
 
 print("SUCCESS!\n")

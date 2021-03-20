@@ -109,37 +109,37 @@ fun teval (ConI _) _ = IntT
             if exp1Type = funTyp then exp2Type else raise WrongRetType
         end
     | teval (Match(exp1, exp2)) (env:plcType env) =
-        let
-            val initialCond = teval exp1 env
-            val firstRes = (#2 (hd exp2))
-            val firstResType = teval firstRes env
-            fun searchMatch (Match(exp1, exp2)) (env:plcType env) =
-                    let in
-                        case exp2 of x::[] => let in
-                                    case x of
-                                        (SOME exp2, exp3) => 
-                                            if (teval exp3 env) = firstResType then
-                                                if initialCond = (teval exp2 env) then 
-                                                    teval exp3 env 
+        if null exp2 then raise NoMatchResults else
+            let
+                val initialCond = teval exp1 env
+                val pattern = (#2 (hd exp2))
+                val patternType = teval pattern env
+                fun find (Match(exp1, exp2)) (env:plcType env) =
+                        let in
+                            case exp2 of x::[] => let in
+                                        case x of
+                                            (SOME exp2, exp3) => 
+                                                if (teval exp3 env) = patternType then
+                                                    if initialCond = (teval exp2 env) then 
+                                                        teval exp3 env 
+                                                    else raise MatchCondTypesDiff
+                                                else raise MatchResTypeDiff
+                                        | (NONE, exp3) => if (teval exp3 env) = patternType then patternType else raise MatchResTypeDiff
+                                    end
+                            | x::xs => let in
+                                    case x of (SOME exp2, exp3) => 
+                                            if (teval exp3 env) = patternType then
+                                                if initialCond = (teval exp2 env) then
+                                                    find (Match(exp1, xs)) env 
                                                 else raise MatchCondTypesDiff
                                             else raise MatchResTypeDiff
-                                    | (NONE, exp3) => if (teval exp3 env) = firstResType then firstResType else raise MatchResTypeDiff
+                                    | _ => raise UnknownType
                                 end
-                        | x::xs => let in
-                                case x of (SOME exp2, exp3) => 
-                                        if (teval exp3 env) = firstResType then
-                                            if initialCond = (teval exp2 env) then
-                                                searchMatch (Match(exp1, xs)) env 
-                                            else raise MatchCondTypesDiff
-                                        else raise MatchResTypeDiff
-                                | _ => raise UnknownType
-                            end
-                        | _ => raise NoMatchResults
-                    end
-                | searchMatch _ _ = raise UnknownType
-        in
-            searchMatch (Match(exp1, exp2)) env
-        end
+                        end
+                    | find _ _ = raise UnknownType
+            in
+                find (Match(exp1, exp2)) env
+            end
     | teval (Prim2(oper, exp1, exp2)) (env:plcType env) =
         let
             val exp1Type = teval exp1 env
