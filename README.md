@@ -28,7 +28,7 @@ run e;
 
 ## Test
 
-A few tests are contained within the test files, beeing they:
+A few tests are contained within the test files, beeing them:
 
 - testChecker.sml,
 - testEnviron.sml,
