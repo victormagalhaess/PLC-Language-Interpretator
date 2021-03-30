@@ -1,6 +1,8 @@
 # PLC Language Interpreter
 
 This repo contains all files necessary to run the PLC language interpreter. <br>
+The PLC language is a purely functional, static, strictly typed and higher-order based. It is based and developed over the Standard ML of New Jersey.
+The description of the language, it's syntax, parse and lexer characteristics are described in the "project.pdf" currently in portuguese only. <br>
 
 ## Usage
 
